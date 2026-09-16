@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Penyusun prompt JSON untuk membuat visual produk di Google Flow." />
+    <meta name="theme-color" content="#14211d" />
+    <title>Ramu Visual — Prompt Produk untuk Flow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2314211d'/%3E%3Cpath d='M18 43V21h15c8 0 13 4 13 11s-5 11-13 11H18Zm8-7h7c3 0 5-1 5-4s-2-4-5-4h-7v8Z' fill='%23ffb54a'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Ramu Visual, kembali ke atas">
+        <span class="brand-mark">R</span>
+        <span><strong>Ramu Visual</strong><small>Prompt produk untuk Flow</small></span>
+      </a>
+      <div class="top-actions">
+        <span class="save-state" id="saveState"><i></i> Siap diramu</span>
+        <button class="button ghost compact" id="exampleButton" type="button">Isi contoh kopi</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="intro" aria-labelledby="pageTitle">
+        <div>
+          <p class="eyebrow">PENYUSUN PROMPT PRODUK</p>
+          <h1 id="pageTitle">Dari rincian produk menjadi prompt yang siap dipakai.</h1>
+        </div>
+        <p>Isi informasi penting, atur tampilan, lalu salin JSON atau prompt teksnya ke Flow. Hasil diperbarui otomatis saat Anda mengetik.</p>
+      </section>
+
+      <div class="builder">
+        <form class="form-panel" id="promptForm">
+          <div class="panel-head">
+            <div><span class="step-number">01</span><h2>Rincian produk</h2></div>
+            <span class="required-note">* wajib diisi</span>
+          </div>
+
+          <div class="field-grid two-col">
+            <label class="field">
+              <span>Nama produk *</span>
+              <input id="productName" name="productName" required value="Luwak White Koffie" placeholder="Contoh: Luwak White Koffie" />
+            </label>
+            <label class="field">
+              <span>Subjudul produk</span>
+              <input id="subtitle" name="subtitle" value="Original" placeholder="Contoh: Original" />
+            </label>
+            <label class="field">
+              <span>Berat</span>
+              <input id="weight" name="weight" value="19 g × 9 saset" placeholder="Contoh: 19 g × 9 saset" />
+            </label>
+            <label class="field">
+              <span>Isi produk</span>
+              <input id="contents" name="contents" value="9 saset kopi instan 3-in-1" placeholder="Contoh: 9 saset" />
+            </label>
+          </div>
+
+          <div class="section-divider"></div>
+          <div class="panel-head section-head">
+            <div><span class="step-number">02</span><h2>Arah visual</h2></div>
+          </div>
+
+          <label class="field">
+            <span>Konsep visual *</span>
+            <textarea id="visualConcept" name="visualConcept" required rows="4" placeholder="Jelaskan suasana, latar, properti, warna, dan gaya visual yang diinginkan.">Foto iklan kopi premium yang hangat di atas meja kayu, suasana kafe pada pagi hari, latar interior lembut dan kabur, cangkir kopi dengan uap tipis, biji kopi tersebar secara alami.</textarea>
+            <small>Semakin spesifik suasana dan propertinya, semakin terarah hasilnya.</small>
+          </label>
+
+          <div class="field-grid settings-grid">
+            <label class="field">
+              <span>Rasio gambar</span>
+              <select id="ratio" name="ratio">
+                <option value="1:1" selected>1:1 — Persegi</option>
+                <option value="4:5">4:5 — Potret katalog</option>
+                <option value="9:16">9:16 — Cerita/Reels</option>
+                <option value="16:9">16:9 — Mendatar</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Sudut kamera</span>
+              <select id="camera" name="camera">
+                <option value="sejajar mata, menghadap lurus ke produk" selected>Sejajar mata</option>
+                <option value="sedikit dari atas dengan produk tetap dominan">Sedikit dari atas</option>
+                <option value="sedikit dari bawah untuk kesan heroik">Sedikit dari bawah</option>
+                <option value="tampak atas atau flat lay">Tampak atas</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Pencahayaan</span>
+              <select id="lighting" name="lighting">
+                <option value="cahaya pagi yang hangat, lembut, dan realistis" selected>Hangat dan lembut</option>
+                <option value="cahaya studio terang, bersih, dan merata">Studio terang</option>
+                <option value="cahaya dramatis dengan kontras tinggi">Dramatis</option>
+                <option value="cahaya alami dari samping dengan bayangan halus">Alami dari samping</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Kualitas</span>
+              <select id="quality" name="quality">
+                <option value="fotografi produk sangat realistis, detail tinggi, tajam" selected>Realistis & detail tinggi</option>
+                <option value="fotografi komersial bersih dan modern">Komersial bersih</option>
+                <option value="editorial premium dengan tekstur sinematik">Editorial premium</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="watermark-card">
+            <div class="watermark-copy">
+              <span class="watermark-icon">W</span>
+              <div><strong>Tanda air</strong><small>Ditempatkan tetap di pojok kiri bawah</small></div>
+            </div>
+            <label class="switch" aria-label="Aktifkan tanda air">
+              <input type="checkbox" id="watermarkEnabled" checked />
+              <span></span>
+            </label>
+            <label class="field watermark-input" id="watermarkField">
+              <span>Teks tanda air</span>
+              <input id="watermarkText" value="Griya Bunga Asri · Blok MM No 1" placeholder="Nama toko atau alamat" />
+            </label>
+          </div>
+
+          <div class="form-footer">
+            <button class="button secondary" id="resetButton" type="button">Kosongkan formulir</button>
+            <button class="button primary" type="submit">Perbarui hasil <span>→</span></button>
+          </div>
+        </form>
+
+        <aside class="output-panel" aria-live="polite">
+          <div class="output-topline">
+            <div><span class="step-number light">03</span><h2>Hasil siap pakai</h2></div>
+            <span class="valid-badge" id="validBadge">JSON valid</span>
+          </div>
+
+          <div class="reference-card">
+            <img src="contoh-luwak-white.jpeg" alt="Contoh visual produk Luwak White Koffie" />
+            <div><span>ACUAN CONTOH</span><strong id="previewName">Luwak White Koffie</strong><small id="previewMeta">Original · 19 g × 9 saset</small></div>
+          </div>
+
+          <div class="tabs" role="tablist" aria-label="Jenis hasil">
+            <button class="tab active" id="jsonTab" role="tab" aria-selected="true" aria-controls="jsonView" type="button">JSON</button>
+            <button class="tab" id="promptTab" role="tab" aria-selected="false" aria-controls="promptView" type="button">Prompt Flow</button>
+          </div>
+
+          <div class="result-view active" id="jsonView" role="tabpanel" aria-labelledby="jsonTab">
+            <pre><code id="jsonOutput"></code></pre>
+          </div>
+          <div class="result-view" id="promptView" role="tabpanel" aria-labelledby="promptTab" hidden>
+            <p id="promptOutput"></p>
+          </div>
+
+          <div class="output-actions">
+            <button class="button copy" id="copyButton" type="button"><span id="copyIcon">⧉</span> <span id="copyLabel">Salin JSON</span></button>
+            <button class="button download" id="downloadButton" type="button" aria-label="Unduh berkas JSON">↓</button>
+          </div>
+          <p class="output-help">Unggah foto produk sebagai <em>ingredient</em> di Flow, lalu tempel prompt teks untuk menjaga bentuk kemasan tetap konsisten.</p>
+        </aside>
+      </div>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
