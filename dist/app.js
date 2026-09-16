@@ -5,7 +5,8 @@
   const form = $("promptForm");
   const fields = {
     productName: $("productName"), subtitle: $("subtitle"), weight: $("weight"),
-    contents: $("contents"), visualConcept: $("visualConcept"), ratio: $("ratio"),
+    contents: $("contents"), price: $("price"), leftStrip: $("leftStrip"),
+    rightStrip: $("rightStrip"), visualConcept: $("visualConcept"), ratio: $("ratio"),
     camera: $("camera"), lighting: $("lighting"), quality: $("quality"),
     watermarkEnabled: $("watermarkEnabled"), watermarkText: $("watermarkText")
   };
@@ -17,7 +18,10 @@
     subtitle: "Original",
     weight: "19 g × 9 saset",
     contents: "9 saset kopi instan 3-in-1",
-    visualConcept: "Foto iklan kopi premium yang hangat di atas meja kayu, suasana kafe pada pagi hari, latar interior lembut dan kabur, cangkir kopi dengan uap tipis, biji kopi tersebar secara alami.",
+    price: "Rp15.000 per bungkus",
+    leftStrip: "Kopi Instan 3-in-1\nWhite Coffee Original",
+    rightStrip: "Berat: 19 g × 9 saset\nBPOM RI Terdaftar",
+    visualConcept: "foto iklan produk yang hangat di atas meja kayu, suasana kafe pada pagi hari, latar interior lembut dan kabur, properti pendukung alami, serta nuansa nyaman dan menggugah selera",
     ratio: "1:1",
     camera: "sejajar mata, menghadap lurus ke produk",
     lighting: "cahaya pagi yang hangat, lembut, dan realistis",
@@ -27,19 +31,23 @@
   };
 
   function value(name) { return fields[name].value.trim(); }
+  function lines(name) { return value(name).split(/\n+/).map((item) => item.trim()).filter(Boolean); }
 
   function buildData() {
     const watermarkOn = fields.watermarkEnabled.checked;
     return {
-      versi_skema: "1.0",
+      versi_skema: "1.1",
       jenis_generasi: "gambar_produk_jualan",
       produk: {
         nama: value("productName"),
         subjudul: value("subtitle"),
         berat: value("weight"),
-        isi: value("contents")
+        isi: value("contents"),
+        harga: value("price")
       },
       konsep_visual: value("visualConcept"),
+      left_strip: lines("leftStrip"),
+      right_strip: lines("rightStrip"),
       pengaturan_gambar: {
         rasio: fields.ratio.value,
         sudut_kamera: fields.camera.value,
@@ -79,9 +87,13 @@
       sentence("Subjudul produk:", p.subjudul),
       sentence("Berat:", p.berat),
       sentence("Isi produk:", p.isi),
+      sentence("Harga yang ditampilkan:", p.harga),
       `Konsep visual: ${data.konsep_visual || "tampilan produk komersial yang bersih dan menarik"}`,
       `Gunakan komposisi ${s.rasio}, sudut kamera ${s.sudut_kamera}, dengan ${s.pencahayaan}.`,
       `Gaya hasil: ${s.kualitas}. Produk utama harus dominan di tengah dan informasi pendukung tertata rapi.`,
+      data.left_strip.length ? `Buat panel informasi vertikal di sebelah kiri produk dengan setiap butir terpisah dan ikon sederhana: ${data.left_strip.join("; ")}.` : "",
+      data.right_strip.length ? `Buat panel informasi vertikal di sebelah kanan produk dengan setiap butir terpisah dan ikon sederhana: ${data.right_strip.join("; ")}.` : "",
+      p.harga ? `Tampilkan harga “${p.harga}” dalam kotak harga yang jelas di area kanan bawah.` : "",
       watermark,
       "Gunakan foto yang diunggah sebagai acuan utama. Pertahankan secara akurat bentuk kemasan, logo, warna produk, dan seluruh tulisan pada kemasan.",
       "Jangan menghasilkan tulisan acak atau salah eja, jangan menambahkan produk lain, dan jangan menutupi produk utama dengan properti atau teks."
@@ -94,7 +106,7 @@
     $("jsonOutput").textContent = JSON.stringify(data, null, 2);
     $("promptOutput").textContent = buildPrompt(data);
     $("previewName").textContent = data.produk.nama || "Nama produk belum diisi";
-    $("previewMeta").textContent = [data.produk.subjudul, data.produk.berat].filter(Boolean).join(" · ") || "Lengkapi rincian produk";
+    $("previewMeta").textContent = [data.produk.subjudul, data.produk.berat, data.produk.harga].filter(Boolean).join(" · ") || "Lengkapi rincian produk";
     $("validBadge").textContent = valid ? "JSON valid" : "Perlu dilengkapi";
     $("validBadge").classList.toggle("invalid", !valid);
     $("watermarkField").classList.toggle("disabled", !data.tanda_air.aktif);
@@ -128,7 +140,7 @@
     Object.keys(fields).forEach((key) => {
       if (!(key in data)) return;
       if (fields[key].type === "checkbox") fields[key].checked = Boolean(data[key]);
-      else fields[key].value = data[key];
+      else fields[key].value = Array.isArray(data[key]) ? data[key].join("\n") : data[key];
     });
     render();
   }
@@ -199,7 +211,10 @@
             subjudul: { type: "string" },
             berat: { type: "string" },
             isi_produk: { type: "string" },
-            konsep_visual: { type: "string", minLength: 1 },
+            harga: { type: "string" },
+            left_strip: { type: "array", items: { type: "string" } },
+            right_strip: { type: "array", items: { type: "string" } },
+            konsep_visual: { type: "string", enum: Array.from(fields.visualConcept.options).map((option) => option.value) },
             rasio: { type: "string", enum: ["1:1", "4:5", "9:16", "16:9"] },
             tanda_air: { type: "string" }
           },
@@ -214,6 +229,9 @@
           applyValues({
             productName: String(input.nama_produk), subtitle: String(input.subjudul || ""),
             weight: String(input.berat || ""), contents: String(input.isi_produk || ""),
+            price: String(input.harga || ""),
+            leftStrip: Array.isArray(input.left_strip) ? input.left_strip : [],
+            rightStrip: Array.isArray(input.right_strip) ? input.right_strip : [],
             visualConcept: String(input.konsep_visual), ratio: input.rasio || "1:1",
             watermarkEnabled: Boolean(input.tanda_air), watermarkText: String(input.tanda_air || "")
           });

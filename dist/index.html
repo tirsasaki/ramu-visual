@@ -57,6 +57,25 @@
               <span>Isi produk</span>
               <input id="contents" name="contents" value="9 saset kopi instan 3-in-1" placeholder="Contoh: 9 saset" />
             </label>
+            <label class="field full-row">
+              <span>Harga</span>
+              <input id="price" name="price" value="Rp15.000 per bungkus" placeholder="Contoh: Rp15.000 per bungkus" />
+            </label>
+          </div>
+
+          <div class="field-grid two-col strip-fields">
+            <label class="field">
+              <span>Panel informasi kiri <code>left_strip</code></span>
+              <textarea id="leftStrip" name="leftStrip" rows="3" placeholder="Satu informasi per baris">Kopi Instan 3-in-1
+White Coffee Original</textarea>
+              <small>Tulis satu informasi pada setiap baris.</small>
+            </label>
+            <label class="field">
+              <span>Panel informasi kanan <code>right_strip</code></span>
+              <textarea id="rightStrip" name="rightStrip" rows="3" placeholder="Satu informasi per baris">Berat: 19 g × 9 saset
+BPOM RI Terdaftar</textarea>
+              <small>Tulis satu informasi pada setiap baris.</small>
+            </label>
           </div>
 
           <div class="section-divider"></div>
@@ -66,8 +85,16 @@
 
           <label class="field">
             <span>Konsep visual *</span>
-            <textarea id="visualConcept" name="visualConcept" required rows="4" placeholder="Jelaskan suasana, latar, properti, warna, dan gaya visual yang diinginkan.">Foto iklan kopi premium yang hangat di atas meja kayu, suasana kafe pada pagi hari, latar interior lembut dan kabur, cangkir kopi dengan uap tipis, biji kopi tersebar secara alami.</textarea>
-            <small>Semakin spesifik suasana dan propertinya, semakin terarah hasilnya.</small>
+            <select id="visualConcept" name="visualConcept" required>
+              <option value="foto iklan produk yang hangat di atas meja kayu, suasana kafe pada pagi hari, latar interior lembut dan kabur, properti pendukung alami, serta nuansa nyaman dan menggugah selera" selected>Kafe hangat — nyaman & menggugah selera</option>
+              <option value="foto produk di studio putih yang bersih, latar minimal, bayangan lembut, komposisi modern, dan tampilan katalog profesional">Studio bersih — modern & profesional</option>
+              <option value="foto produk premium dengan alas marmer, aksen emas yang halus, latar elegan, pencahayaan mewah, dan komposisi berkelas">Premium elegan — marmer & aksen emas</option>
+              <option value="foto produk bernuansa alami dengan elemen daun, kayu, tekstur organik, cahaya matahari lembut, dan warna yang segar">Alami segar — daun & tekstur organik</option>
+              <option value="foto produk dinamis dengan percikan cairan atau bahan utama yang melayang, warna cerah, gerakan membeku, dan kesan energik">Percikan dinamis — segar & energik</option>
+              <option value="foto produk berlatarkan gelap dengan sorotan dramatis, pantulan halus, kontras tinggi, dan suasana eksklusif">Mewah gelap — dramatis & eksklusif</option>
+              <option value="foto produk untuk marketplace dengan warna cerah, tata letak informatif, properti sederhana, kesan ramah, dan produk mudah dikenali">Marketplace ceria — terang & informatif</option>
+            </select>
+            <small>Pilih suasana yang paling sesuai; rincian prompt akan dibuat otomatis.</small>
           </label>
 
           <div class="field-grid settings-grid">
