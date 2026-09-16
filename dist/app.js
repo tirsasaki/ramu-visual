@@ -4,8 +4,10 @@
   const $ = (id) => document.getElementById(id);
   const form = $("promptForm");
   const fields = {
-    productName: $("productName"), subtitle: $("subtitle"), weight: $("weight"),
-    contents: $("contents"), price: $("price"), leftStrip: $("leftStrip"),
+    productName: $("productName"), subtitle: $("subtitle"),
+    weightValue: $("weightValue"), weightUnit: $("weightUnit"),
+    contentsValue: $("contentsValue"), contentsUnit: $("contentsUnit"),
+    price: $("price"), leftStrip: $("leftStrip"),
     rightStrip: $("rightStrip"), visualConcept: $("visualConcept"), ratio: $("ratio"),
     camera: $("camera"), lighting: $("lighting"), quality: $("quality"),
     watermarkEnabled: $("watermarkEnabled"), watermarkText: $("watermarkText")
@@ -16,11 +18,13 @@
   const example = {
     productName: "Luwak White Koffie",
     subtitle: "Original",
-    weight: "19 g × 9 saset",
-    contents: "9 saset kopi instan 3-in-1",
+    weightValue: "19",
+    weightUnit: "gr",
+    contentsValue: "9",
+    contentsUnit: "sachet",
     price: "Rp15.000 per bungkus",
     leftStrip: "Kopi Instan 3-in-1\nWhite Coffee Original",
-    rightStrip: "Berat: 19 g × 9 saset\nBPOM RI Terdaftar",
+    rightStrip: "Berat: 19 gr\nBPOM RI Terdaftar",
     visualConcept: "foto iklan produk yang hangat di atas meja kayu, suasana kafe pada pagi hari, latar interior lembut dan kabur, properti pendukung alami, serta nuansa nyaman dan menggugah selera",
     ratio: "1:1",
     camera: "sejajar mata, menghadap lurus ke produk",
@@ -32,17 +36,18 @@
 
   function value(name) { return fields[name].value.trim(); }
   function lines(name) { return value(name).split(/\n+/).map((item) => item.trim()).filter(Boolean); }
+  function amount(valueName, unitName) { return value(valueName) ? `${value(valueName)} ${fields[unitName].value}` : ""; }
 
   function buildData() {
     const watermarkOn = fields.watermarkEnabled.checked;
     return {
-      versi_skema: "1.1",
+      versi_skema: "1.2",
       jenis_generasi: "gambar_produk_jualan",
       produk: {
         nama: value("productName"),
         subjudul: value("subtitle"),
-        berat: value("weight"),
-        isi: value("contents"),
+        berat: amount("weightValue", "weightUnit"),
+        isi: amount("contentsValue", "contentsUnit"),
         harga: value("price")
       },
       konsep_visual: value("visualConcept"),
@@ -105,8 +110,6 @@
     const valid = Boolean(data.produk.nama && data.konsep_visual);
     $("jsonOutput").textContent = JSON.stringify(data, null, 2);
     $("promptOutput").textContent = buildPrompt(data);
-    $("previewName").textContent = data.produk.nama || "Nama produk belum diisi";
-    $("previewMeta").textContent = [data.produk.subjudul, data.produk.berat, data.produk.harga].filter(Boolean).join(" · ") || "Lengkapi rincian produk";
     $("validBadge").textContent = valid ? "JSON valid" : "Perlu dilengkapi";
     $("validBadge").classList.toggle("invalid", !valid);
     $("watermarkField").classList.toggle("disabled", !data.tanda_air.aktif);
@@ -209,8 +212,10 @@
           properties: {
             nama_produk: { type: "string", minLength: 1 },
             subjudul: { type: "string" },
-            berat: { type: "string" },
-            isi_produk: { type: "string" },
+            berat_nilai: { type: "number", minimum: 0 },
+            berat_satuan: { type: "string", enum: ["ml", "gr", "kg"] },
+            isi_nilai: { type: "number", minimum: 0 },
+            isi_satuan: { type: "string", enum: ["pcs", "pack", "sachet"] },
             harga: { type: "string" },
             left_strip: { type: "array", items: { type: "string" } },
             right_strip: { type: "array", items: { type: "string" } },
@@ -228,7 +233,10 @@
           }
           applyValues({
             productName: String(input.nama_produk), subtitle: String(input.subjudul || ""),
-            weight: String(input.berat || ""), contents: String(input.isi_produk || ""),
+            weightValue: input.berat_nilai == null ? "" : String(input.berat_nilai),
+            weightUnit: input.berat_satuan || "gr",
+            contentsValue: input.isi_nilai == null ? "" : String(input.isi_nilai),
+            contentsUnit: input.isi_satuan || "pcs",
             price: String(input.harga || ""),
             leftStrip: Array.isArray(input.left_strip) ? input.left_strip : [],
             rightStrip: Array.isArray(input.right_strip) ? input.right_strip : [],

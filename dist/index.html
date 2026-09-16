@@ -51,11 +51,25 @@
             </label>
             <label class="field">
               <span>Berat</span>
-              <input id="weight" name="weight" value="19 g × 9 saset" placeholder="Contoh: 19 g × 9 saset" />
+              <div class="compound-input">
+                <input id="weightValue" name="weightValue" type="number" min="0" step="any" value="19" placeholder="Contoh: 250" />
+                <select id="weightUnit" name="weightUnit" aria-label="Satuan berat">
+                  <option value="ml">ml</option>
+                  <option value="gr" selected>gr</option>
+                  <option value="kg">kg</option>
+                </select>
+              </div>
             </label>
             <label class="field">
               <span>Isi produk</span>
-              <input id="contents" name="contents" value="9 saset kopi instan 3-in-1" placeholder="Contoh: 9 saset" />
+              <div class="compound-input">
+                <input id="contentsValue" name="contentsValue" type="number" min="0" step="1" value="9" placeholder="Contoh: 12" />
+                <select id="contentsUnit" name="contentsUnit" aria-label="Satuan isi produk">
+                  <option value="pcs">pcs</option>
+                  <option value="pack">pack</option>
+                  <option value="sachet" selected>sachet</option>
+                </select>
+              </div>
             </label>
             <label class="field full-row">
               <span>Harga</span>
@@ -88,6 +102,7 @@ BPOM RI Terdaftar</textarea>
             <select id="visualConcept" name="visualConcept" required>
               <option value="foto iklan produk yang hangat di atas meja kayu, suasana kafe pada pagi hari, latar interior lembut dan kabur, properti pendukung alami, serta nuansa nyaman dan menggugah selera" selected>Kafe hangat — nyaman & menggugah selera</option>
               <option value="foto produk di studio putih yang bersih, latar minimal, bayangan lembut, komposisi modern, dan tampilan katalog profesional">Studio bersih — modern & profesional</option>
+              <option value="foto produk di kamar mandi modern yang bersih, permukaan wastafel atau rak kamar mandi, ubin lembut, handuk putih, busa atau percikan air secukupnya, serta suasana segar dan higienis">Kamar mandi — segar & higienis</option>
               <option value="foto produk premium dengan alas marmer, aksen emas yang halus, latar elegan, pencahayaan mewah, dan komposisi berkelas">Premium elegan — marmer & aksen emas</option>
               <option value="foto produk bernuansa alami dengan elemen daun, kayu, tekstur organik, cahaya matahari lembut, dan warna yang segar">Alami segar — daun & tekstur organik</option>
               <option value="foto produk dinamis dengan percikan cairan atau bahan utama yang melayang, warna cerah, gerakan membeku, dan kesan energik">Percikan dinamis — segar & energik</option>
@@ -160,11 +175,6 @@ BPOM RI Terdaftar</textarea>
           <div class="output-topline">
             <div><span class="step-number light">03</span><h2>Hasil siap pakai</h2></div>
             <span class="valid-badge" id="validBadge">JSON valid</span>
-          </div>
-
-          <div class="reference-card">
-            <img src="contoh-luwak-white.jpeg" alt="Contoh visual produk Luwak White Koffie" />
-            <div><span>ACUAN CONTOH</span><strong id="previewName">Luwak White Koffie</strong><small id="previewMeta">Original · 19 g × 9 saset</small></div>
           </div>
 
           <div class="tabs" role="tablist" aria-label="Jenis hasil">
