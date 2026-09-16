@@ -71,10 +71,6 @@
                 </select>
               </div>
             </label>
-            <label class="field full-row">
-              <span>Harga</span>
-              <input id="price" name="price" value="Rp15.000 per bungkus" placeholder="Contoh: Rp15.000 per bungkus" />
-            </label>
           </div>
 
           <div class="field-grid two-col strip-fields">
@@ -150,19 +146,80 @@ BPOM RI Terdaftar</textarea>
             </label>
           </div>
 
-          <div class="watermark-card">
-            <div class="watermark-copy">
-              <span class="watermark-icon">W</span>
-              <div><strong>Tanda air</strong><small>Ditempatkan tetap di pojok kiri bawah</small></div>
-            </div>
-            <label class="switch" aria-label="Aktifkan tanda air">
-              <input type="checkbox" id="watermarkEnabled" checked />
-              <span></span>
-            </label>
-            <label class="field watermark-input" id="watermarkField">
-              <span>Teks tanda air</span>
-              <input id="watermarkText" value="Griya Bunga Asri · Blok MM No 1" placeholder="Nama toko atau alamat" />
-            </label>
+          <div class="section-divider"></div>
+          <div class="panel-head section-head">
+            <div><span class="step-number">03</span><h2>Footer</h2></div>
+            <span class="required-note">Harga & tanda air</span>
+          </div>
+
+          <div class="footer-grid">
+            <section class="price-card" aria-labelledby="priceTitle">
+              <div class="price-card-head">
+                <span class="price-icon">Rp</span>
+                <div><strong id="priceTitle">Harga barang</strong><small>Ditampilkan di area kanan bawah visual</small></div>
+              </div>
+
+              <div class="price-fields">
+                <label class="field">
+                  <span>Harga satuan</span>
+                  <div class="currency-input">
+                    <span>Rp</span>
+                    <input id="price" name="price" type="number" min="0" step="100" value="3000" placeholder="3000" />
+                  </div>
+                </label>
+                <label class="field">
+                  <span>Per satuan</span>
+                  <select id="priceUnit" name="priceUnit">
+                    <option value="kg">kg</option>
+                    <option value="pcs" selected>pcs</option>
+                    <option value="pack">pack</option>
+                    <option value="sachet">sachet</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="wholesale-block">
+                <div class="wholesale-toggle">
+                  <div><strong>Harga grosir</strong><small>Harga turun otomatis mulai jumlah tertentu</small></div>
+                  <label class="switch" aria-label="Aktifkan harga grosir">
+                    <input type="checkbox" id="wholesaleEnabled" checked />
+                    <span></span>
+                  </label>
+                </div>
+                <div class="wholesale-fields" id="wholesaleFields">
+                  <label class="field">
+                    <span>Mulai beli</span>
+                    <div class="quantity-input">
+                      <input id="wholesaleMinQty" type="number" min="2" step="1" value="5" />
+                      <b id="wholesaleUnitLabel">pcs</b>
+                    </div>
+                  </label>
+                  <label class="field">
+                    <span>Harga per satuan</span>
+                    <div class="currency-input">
+                      <span>Rp</span>
+                      <input id="wholesalePrice" type="number" min="0" step="100" value="2800" />
+                    </div>
+                  </label>
+                </div>
+                <p class="price-summary" id="priceSummary">1–4 pcs Rp3.000/pcs · ≥5 pcs Rp2.800/pcs</p>
+              </div>
+            </section>
+
+            <section class="watermark-card footer-card">
+              <div class="watermark-copy">
+                <span class="watermark-icon">W</span>
+                <div><strong>Tanda air</strong><small>Ditempatkan tetap di pojok kiri bawah</small></div>
+              </div>
+              <label class="switch" aria-label="Aktifkan tanda air">
+                <input type="checkbox" id="watermarkEnabled" checked />
+                <span></span>
+              </label>
+              <label class="field watermark-input" id="watermarkField">
+                <span>Teks tanda air</span>
+                <input id="watermarkText" value="Griya Bunga Asri · Blok MM No 1" placeholder="Nama toko atau alamat" />
+              </label>
+            </section>
           </div>
 
           <div class="form-footer">
@@ -173,7 +230,7 @@ BPOM RI Terdaftar</textarea>
 
         <aside class="output-panel" aria-live="polite">
           <div class="output-topline">
-            <div><span class="step-number light">03</span><h2>Hasil siap pakai</h2></div>
+            <div><span class="step-number light">04</span><h2>Hasil siap pakai</h2></div>
             <span class="valid-badge" id="validBadge">JSON valid</span>
           </div>
 

@@ -7,7 +7,9 @@
     productName: $("productName"), subtitle: $("subtitle"),
     weightValue: $("weightValue"), weightUnit: $("weightUnit"),
     contentsValue: $("contentsValue"), contentsUnit: $("contentsUnit"),
-    price: $("price"), leftStrip: $("leftStrip"),
+    price: $("price"), priceUnit: $("priceUnit"),
+    wholesaleEnabled: $("wholesaleEnabled"), wholesaleMinQty: $("wholesaleMinQty"),
+    wholesalePrice: $("wholesalePrice"), leftStrip: $("leftStrip"),
     rightStrip: $("rightStrip"), visualConcept: $("visualConcept"), ratio: $("ratio"),
     camera: $("camera"), lighting: $("lighting"), quality: $("quality"),
     watermarkEnabled: $("watermarkEnabled"), watermarkText: $("watermarkText")
@@ -22,7 +24,11 @@
     weightUnit: "gr",
     contentsValue: "9",
     contentsUnit: "sachet",
-    price: "Rp15.000 per bungkus",
+    price: "3000",
+    priceUnit: "pcs",
+    wholesaleEnabled: true,
+    wholesaleMinQty: "5",
+    wholesalePrice: "2800",
     leftStrip: "Kopi Instan 3-in-1\nWhite Coffee Original",
     rightStrip: "Berat: 19 gr\nBPOM RI Terdaftar",
     visualConcept: "foto iklan produk yang hangat di atas meja kayu, suasana kafe pada pagi hari, latar interior lembut dan kabur, properti pendukung alami, serta nuansa nyaman dan menggugah selera",
@@ -37,18 +43,27 @@
   function value(name) { return fields[name].value.trim(); }
   function lines(name) { return value(name).split(/\n+/).map((item) => item.trim()).filter(Boolean); }
   function amount(valueName, unitName) { return value(valueName) ? `${value(valueName)} ${fields[unitName].value}` : ""; }
+  function numberValue(name) { return value(name) === "" ? null : Number(value(name)); }
+  function rupiah(number) { return `Rp${Number(number || 0).toLocaleString("id-ID")}`; }
 
   function buildData() {
     const watermarkOn = fields.watermarkEnabled.checked;
+    const wholesaleOn = fields.wholesaleEnabled.checked;
+    const basePrice = numberValue("price");
+    const wholesaleMin = numberValue("wholesaleMinQty");
+    const wholesalePrice = numberValue("wholesalePrice");
+    const unit = fields.priceUnit.value;
+    const priceRule = wholesaleOn && basePrice != null && wholesaleMin != null && wholesalePrice != null
+      ? `1–${Math.max(1, wholesaleMin - 1)} ${unit} ${rupiah(basePrice)}/${unit}; mulai ${wholesaleMin} ${unit} ${rupiah(wholesalePrice)}/${unit}`
+      : basePrice != null ? `${rupiah(basePrice)}/${unit}` : "";
     return {
-      versi_skema: "1.2",
+      versi_skema: "1.3",
       jenis_generasi: "gambar_produk_jualan",
       produk: {
         nama: value("productName"),
         subjudul: value("subtitle"),
         berat: amount("weightValue", "weightUnit"),
-        isi: amount("contentsValue", "contentsUnit"),
-        harga: value("price")
+        isi: amount("contentsValue", "contentsUnit")
       },
       konsep_visual: value("visualConcept"),
       left_strip: lines("leftStrip"),
@@ -60,11 +75,24 @@
         kualitas: fields.quality.value,
         komposisi: "produk utama dominan di tengah, informasi pendukung tertata rapi, ruang visual tidak terlalu padat"
       },
-      tanda_air: {
-        aktif: watermarkOn,
-        teks: watermarkOn ? value("watermarkText") : "",
-        posisi: watermarkOn ? "pojok kiri bawah" : "tidak digunakan",
-        gaya: watermarkOn ? "jelas, rapi, tidak menutupi produk" : ""
+      footer: {
+        harga: {
+          mata_uang: "IDR",
+          harga_satuan: basePrice,
+          satuan: unit,
+          grosir: {
+            aktif: wholesaleOn,
+            minimal_pembelian: wholesaleOn ? wholesaleMin : null,
+            harga_per_satuan: wholesaleOn ? wholesalePrice : null
+          },
+          aturan_tampilan: priceRule
+        },
+        tanda_air: {
+          aktif: watermarkOn,
+          teks: watermarkOn ? value("watermarkText") : "",
+          posisi: watermarkOn ? "pojok kiri bawah" : "tidak digunakan",
+          gaya: watermarkOn ? "jelas, rapi, tidak menutupi produk" : ""
+        }
       },
       acuan_produk: {
         gunakan_foto_unggahan: true,
@@ -84,21 +112,24 @@
   function buildPrompt(data) {
     const p = data.produk;
     const s = data.pengaturan_gambar;
-    const watermark = data.tanda_air.aktif
-      ? `Tambahkan tanda air bertuliskan “${data.tanda_air.teks}” di pojok kiri bawah; tampilkan dengan jelas dan rapi tanpa menutupi produk.`
+    const price = data.footer.harga;
+    const watermark = data.footer.tanda_air.aktif
+      ? `Tambahkan tanda air bertuliskan “${data.footer.tanda_air.teks}” di pojok kiri bawah; tampilkan dengan jelas dan rapi tanpa menutupi produk.`
       : "Jangan tambahkan tanda air.";
+    const pricePrompt = price.harga_satuan == null ? "" : price.grosir.aktif
+      ? `Tampilkan kotak harga di kanan bawah dengan aturan: ${price.aturan_tampilan}. Bedakan harga satuan dan harga grosir dengan hierarki teks yang jelas.`
+      : `Tampilkan harga ${rupiah(price.harga_satuan)} per ${price.satuan} dalam kotak harga yang jelas di kanan bawah.`;
     return [
       `Buat gambar iklan produk yang profesional untuk ${p.nama || "produk pada foto acuan"}.`,
       sentence("Subjudul produk:", p.subjudul),
       sentence("Berat:", p.berat),
       sentence("Isi produk:", p.isi),
-      sentence("Harga yang ditampilkan:", p.harga),
       `Konsep visual: ${data.konsep_visual || "tampilan produk komersial yang bersih dan menarik"}`,
       `Gunakan komposisi ${s.rasio}, sudut kamera ${s.sudut_kamera}, dengan ${s.pencahayaan}.`,
       `Gaya hasil: ${s.kualitas}. Produk utama harus dominan di tengah dan informasi pendukung tertata rapi.`,
       data.left_strip.length ? `Buat panel informasi vertikal di sebelah kiri produk dengan setiap butir terpisah dan ikon sederhana: ${data.left_strip.join("; ")}.` : "",
       data.right_strip.length ? `Buat panel informasi vertikal di sebelah kanan produk dengan setiap butir terpisah dan ikon sederhana: ${data.right_strip.join("; ")}.` : "",
-      p.harga ? `Tampilkan harga “${p.harga}” dalam kotak harga yang jelas di area kanan bawah.` : "",
+      pricePrompt,
       watermark,
       "Gunakan foto yang diunggah sebagai acuan utama. Pertahankan secara akurat bentuk kemasan, logo, warna produk, dan seluruh tulisan pada kemasan.",
       "Jangan menghasilkan tulisan acak atau salah eja, jangan menambahkan produk lain, dan jangan menutupi produk utama dengan properti atau teks."
@@ -107,13 +138,27 @@
 
   function render() {
     const data = buildData();
-    const valid = Boolean(data.produk.nama && data.konsep_visual);
+    const price = data.footer.harga;
+    const wholesaleValid = !price.grosir.aktif || (
+      Number.isFinite(price.grosir.minimal_pembelian) && price.grosir.minimal_pembelian >= 2 &&
+      Number.isFinite(price.grosir.harga_per_satuan) && price.grosir.harga_per_satuan > 0 &&
+      Number.isFinite(price.harga_satuan) && price.grosir.harga_per_satuan < price.harga_satuan
+    );
+    const valid = Boolean(data.produk.nama && data.konsep_visual && wholesaleValid);
     $("jsonOutput").textContent = JSON.stringify(data, null, 2);
     $("promptOutput").textContent = buildPrompt(data);
     $("validBadge").textContent = valid ? "JSON valid" : "Perlu dilengkapi";
     $("validBadge").classList.toggle("invalid", !valid);
-    $("watermarkField").classList.toggle("disabled", !data.tanda_air.aktif);
-    fields.watermarkText.disabled = !data.tanda_air.aktif;
+    $("watermarkField").classList.toggle("disabled", !data.footer.tanda_air.aktif);
+    fields.watermarkText.disabled = !data.footer.tanda_air.aktif;
+    $("wholesaleFields").classList.toggle("disabled", !price.grosir.aktif);
+    fields.wholesaleMinQty.disabled = !price.grosir.aktif;
+    fields.wholesalePrice.disabled = !price.grosir.aktif;
+    $("wholesaleUnitLabel").textContent = price.satuan;
+    $("priceSummary").textContent = wholesaleValid
+      ? (price.aturan_tampilan || "Isi harga untuk menampilkan ringkasan")
+      : "Harga grosir harus lebih rendah dari harga satuan dan dimulai dari minimal 2 barang.";
+    $("priceSummary").classList.toggle("invalid", !wholesaleValid);
     $("saveState").innerHTML = `<i></i> ${valid ? "Hasil diperbarui" : "Lengkapi isian wajib"}`;
   }
 
@@ -193,6 +238,7 @@
       if (field.tagName === "TEXTAREA") field.value = "";
     });
     fields.watermarkEnabled.checked = false;
+    fields.wholesaleEnabled.checked = false;
     render();
     showToast("Formulir dikosongkan");
   });
@@ -216,7 +262,11 @@
             berat_satuan: { type: "string", enum: ["ml", "gr", "kg"] },
             isi_nilai: { type: "number", minimum: 0 },
             isi_satuan: { type: "string", enum: ["pcs", "pack", "sachet"] },
-            harga: { type: "string" },
+            harga_nilai: { type: "number", minimum: 0 },
+            harga_satuan: { type: "string", enum: ["kg", "pcs", "pack", "sachet"] },
+            grosir_aktif: { type: "boolean" },
+            grosir_minimum: { type: "integer", minimum: 2 },
+            grosir_harga: { type: "number", minimum: 0 },
             left_strip: { type: "array", items: { type: "string" } },
             right_strip: { type: "array", items: { type: "string" } },
             konsep_visual: { type: "string", enum: Array.from(fields.visualConcept.options).map((option) => option.value) },
@@ -237,7 +287,11 @@
             weightUnit: input.berat_satuan || "gr",
             contentsValue: input.isi_nilai == null ? "" : String(input.isi_nilai),
             contentsUnit: input.isi_satuan || "pcs",
-            price: String(input.harga || ""),
+            price: input.harga_nilai == null ? "" : String(input.harga_nilai),
+            priceUnit: input.harga_satuan || "pcs",
+            wholesaleEnabled: Boolean(input.grosir_aktif),
+            wholesaleMinQty: input.grosir_minimum == null ? "5" : String(input.grosir_minimum),
+            wholesalePrice: input.grosir_harga == null ? "" : String(input.grosir_harga),
             leftStrip: Array.isArray(input.left_strip) ? input.left_strip : [],
             rightStrip: Array.isArray(input.right_strip) ? input.right_strip : [],
             visualConcept: String(input.konsep_visual), ratio: input.rasio || "1:1",
