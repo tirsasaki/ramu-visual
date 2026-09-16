@@ -4,7 +4,7 @@
   const $ = (id) => document.getElementById(id);
   const form = $("promptForm");
   const fields = {
-    productName: $("productName"), subtitle: $("subtitle"),
+    productName: $("productName"), subtitle: $("subtitle"), productCategory: $("productCategory"),
     weightValue: $("weightValue"), weightUnit: $("weightUnit"),
     contentsValue: $("contentsValue"), contentsUnit: $("contentsUnit"),
     price: $("price"), priceUnit: $("priceUnit"),
@@ -31,14 +31,15 @@
     const wholesalePrice = numberValue("wholesalePrice");
     const unit = fields.priceUnit.value;
     const priceRule = wholesaleOn && basePrice != null && wholesaleMin != null && wholesalePrice != null
-      ? `1–${Math.max(1, wholesaleMin - 1)} ${unit} ${rupiah(basePrice)}/${unit}; mulai ${wholesaleMin} ${unit} ${rupiah(wholesalePrice)}/${unit}`
+      ? `${rupiah(basePrice)}/${unit} · ${wholesaleMin}+ ${unit} ${rupiah(wholesalePrice)}/${unit}`
       : basePrice != null ? `${rupiah(basePrice)}/${unit}` : "";
     return {
-      versi_skema: "1.3",
+      versi_skema: "1.4",
       jenis_generasi: "gambar_produk_jualan",
       produk: {
         nama: value("productName"),
         subjudul: value("subtitle"),
+        kategori: fields.productCategory.value,
         berat: amount("weightValue", "weightUnit"),
         isi: amount("contentsValue", "contentsUnit")
       },
@@ -50,7 +51,11 @@
         sudut_kamera: fields.camera.value,
         pencahayaan: fields.lighting.value,
         kualitas: fields.quality.value,
-        komposisi: "produk utama dominan di tengah, informasi pendukung tertata rapi, ruang visual tidak terlalu padat"
+        komposisi: "produk utama dominan di tengah, judul dan subjudul berada di area atas, panel informasi horizontal terbaca jelas, ruang visual tidak terlalu padat",
+        bahasa_informasi: "English",
+        sajian_produk: ["makanan", "minuman"].includes(fields.productCategory.value)
+          ? "wajib menampilkan sajian siap konsumsi yang sesuai di dekat kemasan"
+          : "tidak wajib"
       },
       footer: {
         harga: {
@@ -62,14 +67,23 @@
             minimal_pembelian: wholesaleOn ? wholesaleMin : null,
             harga_per_satuan: wholesaleOn ? wholesalePrice : null
           },
-          aturan_tampilan: priceRule
+          aturan_tampilan: priceRule,
+          format_ringkas_grosir: wholesaleOn && wholesaleMin != null && wholesalePrice != null
+            ? `${wholesaleMin}+ ${unit} · ${rupiah(wholesalePrice)}/${unit}`
+            : ""
         },
         tanda_air: {
           aktif: watermarkOn,
           teks: watermarkOn ? value("watermarkText") : "",
           posisi: watermarkOn ? "pojok kiri bawah" : "tidak digunakan",
-          gaya: watermarkOn ? "jelas, rapi, tidak menutupi produk" : ""
+          gaya: watermarkOn ? "jelas, rapi, tidak menutupi produk, salin teks persis tanpa terjemahan atau perubahan urutan" : ""
         }
+      },
+      aturan_teks: {
+        judul: "wajib tampil besar dan terbaca di bagian atas gambar, salin nama produk persis",
+        subjudul: "wajib tampil tepat di bawah judul bila diisi, salin persis",
+        panel_informasi: "gunakan kartu horizontal; ikon di kiri dan teks mendatar di kanan; jangan putar teks; ukuran kartu menyesuaikan isi",
+        bahasa: "gunakan bahasa Inggris yang alami untuk semua informasi tambahan; nama produk, subjudul, merek, sertifikasi, angka, satuan, dan tanda air/alamat tetap persis"
       },
       acuan_produk: {
         gunakan_foto_unggahan: true,
@@ -91,25 +105,40 @@
     const s = data.pengaturan_gambar;
     const price = data.footer.harga;
     const watermark = data.footer.tanda_air.aktif
-      ? `Tambahkan tanda air bertuliskan “${data.footer.tanda_air.teks}” di pojok kiri bawah; tampilkan dengan jelas dan rapi tanpa menutupi produk.`
+      ? `Di pojok kiri bawah, tulis tanda air persis sebagai literal berikut: “${data.footer.tanda_air.teks}”. Pertahankan setiap kata, urutan, kapitalisasi, angka, tanda baca, dan spasinya. Jangan terjemahkan, jangan susun ulang, dan jangan menormalkan alamat tersebut.`
       : "Jangan tambahkan tanda air.";
     const pricePrompt = price.harga_satuan == null ? "" : price.grosir.aktif
-      ? `Tampilkan kotak harga di kanan bawah dengan aturan: ${price.aturan_tampilan}. Bedakan harga satuan dan harga grosir dengan hierarki teks yang jelas.`
-      : `Tampilkan harga ${rupiah(price.harga_satuan)} per ${price.satuan} dalam kotak harga yang jelas di kanan bawah.`;
+      ? `Di kanan bawah, tampilkan harga utama “IDR ${Number(price.harga_satuan).toLocaleString("en-US")}/${price.satuan}” dan tepat di bawahnya hanya satu baris grosir singkat: “${price.grosir.minimal_pembelian}+ ${price.satuan} · IDR ${Number(price.grosir.harga_per_satuan).toLocaleString("en-US")}/${price.satuan}”. Jangan tambahkan rentang jumlah, kata penjelas, atau kalimat grosir lain.`
+      : `Di kanan bawah, tampilkan “IDR ${Number(price.harga_satuan).toLocaleString("en-US")}/${price.satuan}” dalam kotak harga yang jelas.`;
+    const titleRule = p.nama
+      ? `WAJIB tampilkan judul “${p.nama}” sebagai teks besar, tebal, dan mudah dibaca di bagian atas gambar.`
+      : "";
+    const subtitleRule = p.subjudul
+      ? `WAJIB tampilkan subjudul “${p.subjudul}” tepat di bawah judul dengan ukuran lebih kecil tetapi tetap jelas.`
+      : "";
+    const servingRule = ["makanan", "minuman"].includes(p.kategori)
+      ? `Karena ini produk ${p.kategori}, WAJIB tampilkan sajian siap konsumsi yang sesuai di dekat kemasan—terlihat lezat dan realistis, tidak mengganti kemasan, serta tidak menutupi logo atau informasi utama.`
+      : "";
+    const horizontalPanelRule = "Semua panel informasi harus berupa kartu horizontal: ikon sederhana di sebelah kiri dan teks mendatar di sebelah kanan. Jangan gunakan tulisan vertikal, jangan memutar teks, dan jangan membuat panel tinggi serta sempit. Lebar dan tinggi kartu harus menyesuaikan panjang teks, dengan ukuran huruf besar, jarak yang lega, dan keterbacaan tinggi.";
+    const languageRule = "Gunakan bahasa Inggris yang alami dan ringkas untuk seluruh informasi tambahan pada panel. Terjemahkan manfaat atau klaim ke bahasa Inggris, tetapi pertahankan persis nama produk, subjudul, nama merek, BPOM/sertifikasi, angka, satuan, serta tanda air atau alamat yang diberikan pengguna.";
     return [
-      `Buat gambar iklan produk yang profesional untuk ${p.nama || "produk pada foto acuan"}.`,
-      sentence("Subjudul produk:", p.subjudul),
+      `Buat gambar iklan produk profesional untuk ${p.nama || "produk pada foto acuan"}.`,
+      titleRule,
+      subtitleRule,
       sentence("Berat:", p.berat),
       sentence("Isi produk:", p.isi),
       `Konsep visual: ${data.konsep_visual || "tampilan produk komersial yang bersih dan menarik"}`,
       `Gunakan komposisi ${s.rasio}, sudut kamera ${s.sudut_kamera}, dengan ${s.pencahayaan}.`,
-      `Gaya hasil: ${s.kualitas}. Produk utama harus dominan di tengah dan informasi pendukung tertata rapi.`,
-      data.left_strip.length ? `Buat panel informasi vertikal di sebelah kiri produk dengan setiap butir terpisah dan ikon sederhana: ${data.left_strip.join("; ")}.` : "",
-      data.right_strip.length ? `Buat panel informasi vertikal di sebelah kanan produk dengan setiap butir terpisah dan ikon sederhana: ${data.right_strip.join("; ")}.` : "",
+      `Gaya hasil: ${s.kualitas}. Produk utama harus dominan di tengah; sisakan ruang atas khusus untuk judul dan subjudul.`,
+      servingRule,
+      horizontalPanelRule,
+      languageRule,
+      data.left_strip.length ? `Tempatkan kelompok kartu horizontal di sisi kiri atau kiri-bawah dengan isi: ${data.left_strip.join("; ")}.` : "",
+      data.right_strip.length ? `Tempatkan kelompok kartu horizontal di sisi kanan atau kanan-bawah dengan isi: ${data.right_strip.join("; ")}.` : "",
       pricePrompt,
       watermark,
       "Gunakan foto yang diunggah sebagai acuan utama. Pertahankan secara akurat bentuk kemasan, logo, warna produk, dan seluruh tulisan pada kemasan.",
-      "Jangan menghasilkan tulisan acak atau salah eja, jangan menambahkan produk lain, dan jangan menutupi produk utama dengan properti atau teks."
+      "Pastikan judul dan subjudul benar-benar terlihat di hasil akhir. Jangan menghasilkan tulisan acak atau salah eja, jangan menambahkan produk lain, dan jangan menutupi produk utama dengan properti atau teks."
     ].filter(Boolean).join(" ");
   }
 
@@ -234,6 +263,7 @@
           properties: {
             nama_produk: { type: "string", minLength: 1 },
             subjudul: { type: "string" },
+            jenis_produk: { type: "string", enum: ["makanan", "minuman", "perawatan_diri", "produk_lain"] },
             berat_nilai: { type: "number", minimum: 0 },
             berat_satuan: { type: "string", enum: ["ml", "gr", "kg"] },
             isi_nilai: { type: "number", minimum: 0 },
@@ -259,6 +289,7 @@
           }
           applyValues({
             productName: String(input.nama_produk), subtitle: String(input.subjudul || ""),
+            productCategory: input.jenis_produk || "produk_lain",
             weightValue: input.berat_nilai == null ? "" : String(input.berat_nilai),
             weightUnit: input.berat_satuan || "gr",
             contentsValue: input.isi_nilai == null ? "" : String(input.isi_nilai),

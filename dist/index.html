@@ -49,6 +49,16 @@
               <input id="subtitle" name="subtitle" placeholder="Masukkan subjudul produk" />
             </label>
             <label class="field">
+              <span>Jenis produk *</span>
+              <select id="productCategory" name="productCategory" required>
+                <option value="makanan">Makanan — tampilkan sajian</option>
+                <option value="minuman">Minuman — tampilkan sajian</option>
+                <option value="perawatan_diri">Perawatan diri</option>
+                <option value="produk_lain" selected>Produk lainnya</option>
+              </select>
+              <small>Makanan dan minuman otomatis ditampilkan bersama sajian siap konsumsi.</small>
+            </label>
+            <label class="field">
               <span>Berat</span>
               <div class="compound-input">
                 <input id="weightValue" name="weightValue" type="number" min="0" step="any" placeholder="0" />
@@ -76,12 +86,12 @@
             <label class="field">
               <span>Panel informasi kiri <code>left_strip</code></span>
               <textarea id="leftStrip" name="leftStrip" rows="3" placeholder="Satu informasi per baris"></textarea>
-              <small>Tulis satu informasi pada setiap baris.</small>
+              <small>Tulis satu informasi per baris. Hasil visual dibuat dalam bahasa Inggris.</small>
             </label>
             <label class="field">
               <span>Panel informasi kanan <code>right_strip</code></span>
               <textarea id="rightStrip" name="rightStrip" rows="3" placeholder="Satu informasi per baris"></textarea>
-              <small>Tulis satu informasi pada setiap baris.</small>
+              <small>Tulis satu informasi per baris. Hasil visual dibuat dalam bahasa Inggris.</small>
             </label>
           </div>
 
@@ -215,6 +225,7 @@
               <label class="field watermark-input" id="watermarkField">
                 <span>Teks tanda air</span>
                 <input id="watermarkText" placeholder="Nama toko atau alamat" />
+                <small>Disalin persis seperti yang Anda tulis; tidak diterjemahkan atau diubah urutannya.</small>
               </label>
             </section>
           </div>
