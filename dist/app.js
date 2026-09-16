@@ -29,12 +29,15 @@
     const basePrice = numberValue("price");
     const wholesaleMin = numberValue("wholesaleMinQty");
     const wholesalePrice = numberValue("wholesalePrice");
+    const wholesaleTotal = wholesaleMin != null && wholesalePrice != null
+      ? wholesaleMin * wholesalePrice
+      : null;
     const unit = fields.priceUnit.value;
     const priceRule = wholesaleOn && basePrice != null && wholesaleMin != null && wholesalePrice != null
-      ? `${rupiah(basePrice)}/${unit} · ${wholesaleMin}+ ${unit} ${rupiah(wholesalePrice)}/${unit}`
+      ? `${rupiah(basePrice)}/${unit} · ${wholesaleMin} ${unit} ${rupiah(wholesaleTotal)}`
       : basePrice != null ? `${rupiah(basePrice)}/${unit}` : "";
     return {
-      versi_skema: "1.4",
+      versi_skema: "1.5",
       jenis_generasi: "gambar_produk_jualan",
       produk: {
         nama: value("productName"),
@@ -65,18 +68,19 @@
           grosir: {
             aktif: wholesaleOn,
             minimal_pembelian: wholesaleOn ? wholesaleMin : null,
-            harga_per_satuan: wholesaleOn ? wholesalePrice : null
+            harga_per_satuan: wholesaleOn ? wholesalePrice : null,
+            total_harga: wholesaleOn ? wholesaleTotal : null
           },
           aturan_tampilan: priceRule,
           format_ringkas_grosir: wholesaleOn && wholesaleMin != null && wholesalePrice != null
-            ? `${wholesaleMin}+ ${unit} · ${rupiah(wholesalePrice)}/${unit}`
+            ? `${wholesaleMin} ${unit} · ${rupiah(wholesaleTotal)}`
             : ""
         },
         tanda_air: {
           aktif: watermarkOn,
           teks: watermarkOn ? value("watermarkText") : "",
           posisi: watermarkOn ? "pojok kiri bawah" : "tidak digunakan",
-          gaya: watermarkOn ? "jelas, rapi, tidak menutupi produk, salin teks persis tanpa terjemahan atau perubahan urutan" : ""
+          gaya: watermarkOn ? "teks polos tanpa kotak, panel, label, banner, atau latar; jelas, rapi, tidak menutupi produk; salin persis tanpa terjemahan atau perubahan urutan" : ""
         }
       },
       aturan_teks: {
@@ -105,10 +109,10 @@
     const s = data.pengaturan_gambar;
     const price = data.footer.harga;
     const watermark = data.footer.tanda_air.aktif
-      ? `Di pojok kiri bawah, tulis tanda air persis sebagai literal berikut: “${data.footer.tanda_air.teks}”. Pertahankan setiap kata, urutan, kapitalisasi, angka, tanda baca, dan spasinya. Jangan terjemahkan, jangan susun ulang, dan jangan menormalkan alamat tersebut.`
+      ? `Di pojok kiri bawah, tulis tanda air persis sebagai literal berikut: “${data.footer.tanda_air.teks}”. Tampilkan sebagai TEKS POLOS langsung di atas gambar dengan latar transparan. Jangan buat kotak, panel, label, pil, banner, bidang warna, bingkai, atau wadah apa pun di belakangnya. Pertahankan setiap kata, urutan, kapitalisasi, angka, tanda baca, dan spasinya. Jangan terjemahkan, jangan susun ulang, dan jangan menormalkan alamat tersebut.`
       : "Jangan tambahkan tanda air.";
     const pricePrompt = price.harga_satuan == null ? "" : price.grosir.aktif
-      ? `Di kanan bawah, tampilkan harga utama “IDR ${Number(price.harga_satuan).toLocaleString("en-US")}/${price.satuan}” dan tepat di bawahnya hanya satu baris grosir singkat: “${price.grosir.minimal_pembelian}+ ${price.satuan} · IDR ${Number(price.grosir.harga_per_satuan).toLocaleString("en-US")}/${price.satuan}”. Jangan tambahkan rentang jumlah, kata penjelas, atau kalimat grosir lain.`
+      ? `Di kanan bawah, buat satu kartu harga dengan hierarki dua baris yang terpisah dan rata. Baris atas lebih besar: “IDR ${Number(price.harga_satuan).toLocaleString("en-US")}/${price.satuan}”. Baris bawah lebih kecil: “${price.grosir.minimal_pembelian} ${price.satuan} · IDR ${Number(price.grosir.total_harga).toLocaleString("en-US")}”. Baris grosir WAJIB menampilkan jumlah barang dan TOTAL harga paket grosir saja; jangan tampilkan harga grosir per satuan, tanda /${price.satuan}, rentang jumlah, kata “starting from”, atau kalimat tambahan. Jangan gabungkan kedua harga dalam satu baris.`
       : `Di kanan bawah, tampilkan “IDR ${Number(price.harga_satuan).toLocaleString("en-US")}/${price.satuan}” dalam kotak harga yang jelas.`;
     const titleRule = p.nama
       ? `WAJIB tampilkan judul “${p.nama}” sebagai teks besar, tebal, dan mudah dibaca di bagian atas gambar.`
