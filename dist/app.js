@@ -41,7 +41,7 @@
       ? `Baris 1: ${rupiah(basePrice)}/${unit} · Baris 2: ${wholesaleMin} ${unit} ${rupiah(wholesaleTotal)}`
       : basePrice != null ? `Baris 1: ${rupiah(basePrice)}/${unit}` : "";
     return {
-      versi_skema: "1.8",
+      versi_skema: "1.9",
       jenis_generasi: "gambar_produk_jualan",
       produk: {
         nama: value("productName"),
@@ -81,6 +81,8 @@
             ? `${wholesaleMin} ${unit} · ${rupiah(wholesaleTotal)}`
             : "",
           posisi: "pojok kanan bawah",
+          latar: "persegi panjang besar dengan warna gelap dari keluarga warna utama produk, ujung kiri bawah membentuk lancip seperti ekor label harga",
+          warna_teks: "putih atau sangat terang dengan kontras tinggi",
           line_1: basePrice != null ? {
             jenis: "harga_normal",
             teks: `IDR ${Number(basePrice).toLocaleString("en-US")}/${unit}`,
@@ -97,7 +99,16 @@
           teks: watermarkOn ? value("watermarkText") : "",
           posisi: watermarkOn ? "pojok kiri bawah" : "tidak digunakan",
           ikon: watermarkOn ? "ikon warung atau etalase toko sederhana di sebelah kiri teks" : "",
-          gaya: watermarkOn ? "ikon dan teks polos tanpa kotak, panel, label, banner, atau latar; jelas, rapi, tidak menutupi produk; salin persis tanpa terjemahan atau perubahan urutan" : ""
+          latar: watermarkOn ? "persegi panjang mendatar berwarna terang, panjang sedang mengikuti ikon dan teks dengan padding proporsional" : "",
+          warna_teks: watermarkOn ? "hitam" : "",
+          gaya: watermarkOn ? "label ringkas, jelas, rapi, tidak menutupi produk; salin teks persis tanpa terjemahan atau perubahan urutan" : ""
+        },
+        sistem_visual: {
+          motif: "sepasang label dagang modern yang serasi",
+          palet: "warna terang untuk tanda air dan warna gelap dari keluarga warna yang sama untuk harga",
+          konsistensi: "radius sudut, bayangan lembut, ketebalan visual, dan jarak dari tepi dibuat seragam",
+          skala: "kartu harga sekitar 35–50 persen lebih besar daripada label tanda air",
+          larangan: "jangan menyambungkan kedua label dan jangan membuat salah satunya selebar penuh gambar"
         }
       },
       aturan_teks: {
@@ -126,11 +137,12 @@
     const s = data.pengaturan_gambar;
     const price = data.footer.harga;
     const watermark = data.footer.tanda_air.aktif
-      ? `Di POJOK KIRI BAWAH, buat tanda air berupa ikon warung/etalase toko yang sederhana dan berkesan, lalu teks literal “${data.footer.tanda_air.teks}” tepat di sebelah kanannya. Gunakan ikon garis monokrom yang kecil, bersih, dan mudah dikenali sebagai warung. Ikon dan teks harus langsung berada di atas gambar dengan latar transparan. Jangan buat kotak, panel, label, pil, banner, bidang warna, bingkai, atau wadah apa pun di belakangnya. Pertahankan setiap kata, urutan, kapitalisasi, angka, tanda baca, dan spasi pada teks. Jangan terjemahkan, jangan susun ulang, dan jangan menormalkan alamat tersebut.`
+      ? `Di POJOK KIRI BAWAH, buat label tanda air berbentuk PERSEGI PANJANG MENDATAR berwarna terang. Di dalamnya, tempatkan ikon garis warung/etalase toko yang kecil dan berwarna hitam, lalu teks literal “${data.footer.tanda_air.teks}” berwarna hitam tepat di sebelah kanannya. Lebar label harus sedang dan mengikuti lebar ikon plus teks, dengan padding horizontal sekitar 20–30% dari tinggi huruf; jangan membuatnya terlalu panjang atau selebar gambar. Gunakan sudut membulat halus dan bayangan tipis. Pertahankan setiap kata, urutan, kapitalisasi, angka, tanda baca, dan spasi pada teks. Jangan terjemahkan, jangan susun ulang, dan jangan menormalkan alamat tersebut.`
       : "Jangan tambahkan tanda air.";
     const pricePrompt = price.harga_satuan == null ? "" : (price.grosir.aktif && price.line_2)
-      ? `Tempatkan blok harga hanya di POJOK KANAN BAWAH. Susun sebagai dua baris vertikal yang benar-benar terpisah, bukan satu kalimat dan bukan satu baris mendatar.\nLINE 1 — HARGA NORMAL: “${price.line_1.teks}”. Jadikan LINE 1 lebih besar, tebal, dan dominan.\nLINE 2 — HARGA GROSIR: “${price.line_2.teks}”. Letakkan LINE 2 tepat di bawah LINE 1 dengan jeda vertikal yang jelas dan ukuran sedikit lebih kecil. LINE 2 hanya boleh memuat jumlah barang dan TOTAL harga paket grosir; jangan tampilkan harga grosir per satuan, tanda /${price.satuan}, rentang jumlah, kata “starting from”, atau kalimat tambahan. DILARANG menggabungkan LINE 1 dan LINE 2 pada baseline atau baris yang sama.`
-      : `Di POJOK KANAN BAWAH, tampilkan “${price.line_1.teks}” sebagai harga normal yang besar, tebal, dan jelas.`;
+      ? `Tempatkan kartu harga hanya di POJOK KANAN BAWAH. Kartu berupa persegi panjang berwarna gelap, sekitar 35–50% lebih besar daripada label tanda air, dengan UJUNG LANCIP berbentuk ekor label harga pada SUDUT KIRI BAWAH. Sudut lainnya membulat halus. Gunakan teks putih atau sangat terang dan bayangan tipis. Susun isi sebagai dua baris vertikal yang benar-benar terpisah, bukan satu kalimat dan bukan satu baris mendatar.\nLINE 1 — HARGA NORMAL: “${price.line_1.teks}”. Jadikan LINE 1 lebih besar, tebal, dan dominan.\nLINE 2 — HARGA GROSIR: “${price.line_2.teks}”. Letakkan LINE 2 tepat di bawah LINE 1 dengan jeda vertikal yang jelas dan ukuran sedikit lebih kecil. LINE 2 hanya boleh memuat jumlah barang dan TOTAL harga paket grosir; jangan tampilkan harga grosir per satuan, tanda /${price.satuan}, rentang jumlah, kata “starting from”, atau kalimat tambahan. DILARANG menggabungkan LINE 1 dan LINE 2 pada baseline atau baris yang sama.`
+      : `Di POJOK KANAN BAWAH, tampilkan “${price.line_1.teks}” di dalam kartu persegi panjang gelap yang cukup besar, dengan ujung lancip seperti ekor label harga pada sudut kiri bawah. Gunakan teks terang yang besar, tebal, dan jelas.`;
+    const footerStyle = "Buat tanda air dan kartu harga sebagai satu SISTEM VISUAL FOOTER yang konsisten: gunakan keluarga warna yang sama, radius sudut yang serasi, bayangan lembut yang sama, ketebalan visual seimbang, jarak aman dari tepi yang setara, dan garis dasar yang rapi. Tanda air tetap lebih ringkas di kiri bawah; kartu harga lebih besar dan dominan di kanan bawah. Jangan menyambungkan kedua elemen dan jangan membuatnya menjadi bilah selebar penuh gambar.";
     const titleRule = p.nama
       ? `WAJIB tampilkan judul “${p.nama}” sebagai teks besar, tebal, dan mudah dibaca di bagian atas gambar. Tambahkan efek cahaya lembut yang tipis pada tepi huruf—seperti halo halus, bukan neon kuat—agar judul terasa lebih hidup tanpa mengurangi ketajaman teks.`
       : "";
@@ -156,6 +168,7 @@
       languageRule,
       data.informasi_kiri.length ? `Tempatkan kelompok kartu informasi di sisi kiri atau kiri-bawah dengan isi: ${data.informasi_kiri.join("; ")}.` : "",
       data.informasi_kanan.length ? `Tempatkan kelompok kartu informasi di sisi kanan atau kanan-bawah dengan isi: ${data.informasi_kanan.join("; ")}.` : "",
+      footerStyle,
       pricePrompt,
       watermark,
       "Gunakan foto yang diunggah sebagai acuan utama. Pertahankan secara akurat bentuk kemasan, logo, warna produk, dan seluruh tulisan pada kemasan.",
