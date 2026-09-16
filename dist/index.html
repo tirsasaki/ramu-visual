@@ -20,7 +20,6 @@
       </a>
       <div class="top-actions">
         <span class="save-state" id="saveState"><i></i> Siap diramu</span>
-        <button class="button ghost compact" id="exampleButton" type="button">Isi contoh kopi</button>
       </div>
     </header>
 
@@ -43,16 +42,16 @@
           <div class="field-grid two-col">
             <label class="field">
               <span>Nama produk *</span>
-              <input id="productName" name="productName" required value="Luwak White Koffie" placeholder="Contoh: Luwak White Koffie" />
+              <input id="productName" name="productName" required placeholder="Masukkan nama produk" />
             </label>
             <label class="field">
               <span>Subjudul produk</span>
-              <input id="subtitle" name="subtitle" value="Original" placeholder="Contoh: Original" />
+              <input id="subtitle" name="subtitle" placeholder="Masukkan subjudul produk" />
             </label>
             <label class="field">
               <span>Berat</span>
               <div class="compound-input">
-                <input id="weightValue" name="weightValue" type="number" min="0" step="any" value="19" placeholder="Contoh: 250" />
+                <input id="weightValue" name="weightValue" type="number" min="0" step="any" placeholder="0" />
                 <select id="weightUnit" name="weightUnit" aria-label="Satuan berat">
                   <option value="ml">ml</option>
                   <option value="gr" selected>gr</option>
@@ -63,7 +62,7 @@
             <label class="field">
               <span>Isi produk</span>
               <div class="compound-input">
-                <input id="contentsValue" name="contentsValue" type="number" min="0" step="1" value="9" placeholder="Contoh: 12" />
+                <input id="contentsValue" name="contentsValue" type="number" min="0" step="1" placeholder="0" />
                 <select id="contentsUnit" name="contentsUnit" aria-label="Satuan isi produk">
                   <option value="pcs">pcs</option>
                   <option value="pack">pack</option>
@@ -76,14 +75,12 @@
           <div class="field-grid two-col strip-fields">
             <label class="field">
               <span>Panel informasi kiri <code>left_strip</code></span>
-              <textarea id="leftStrip" name="leftStrip" rows="3" placeholder="Satu informasi per baris">Kopi Instan 3-in-1
-White Coffee Original</textarea>
+              <textarea id="leftStrip" name="leftStrip" rows="3" placeholder="Satu informasi per baris"></textarea>
               <small>Tulis satu informasi pada setiap baris.</small>
             </label>
             <label class="field">
               <span>Panel informasi kanan <code>right_strip</code></span>
-              <textarea id="rightStrip" name="rightStrip" rows="3" placeholder="Satu informasi per baris">Berat: 19 g × 9 saset
-BPOM RI Terdaftar</textarea>
+              <textarea id="rightStrip" name="rightStrip" rows="3" placeholder="Satu informasi per baris"></textarea>
               <small>Tulis satu informasi pada setiap baris.</small>
             </label>
           </div>
@@ -96,8 +93,8 @@ BPOM RI Terdaftar</textarea>
           <label class="field">
             <span>Konsep visual *</span>
             <select id="visualConcept" name="visualConcept" required>
-              <option value="foto iklan produk yang hangat di atas meja kayu, suasana kafe pada pagi hari, latar interior lembut dan kabur, properti pendukung alami, serta nuansa nyaman dan menggugah selera" selected>Kafe hangat — nyaman & menggugah selera</option>
-              <option value="foto produk di studio putih yang bersih, latar minimal, bayangan lembut, komposisi modern, dan tampilan katalog profesional">Studio bersih — modern & profesional</option>
+              <option value="foto iklan produk yang hangat di atas meja kayu, suasana kafe pada pagi hari, latar interior lembut dan kabur, properti pendukung alami, serta nuansa nyaman dan menggugah selera">Kafe hangat — nyaman & menggugah selera</option>
+              <option value="foto produk di studio putih yang bersih, latar minimal, bayangan lembut, komposisi modern, dan tampilan katalog profesional" selected>Studio bersih — modern & profesional</option>
               <option value="foto produk di kamar mandi modern yang bersih, permukaan wastafel atau rak kamar mandi, ubin lembut, handuk putih, busa atau percikan air secukupnya, serta suasana segar dan higienis">Kamar mandi — segar & higienis</option>
               <option value="foto produk premium dengan alas marmer, aksen emas yang halus, latar elegan, pencahayaan mewah, dan komposisi berkelas">Premium elegan — marmer & aksen emas</option>
               <option value="foto produk bernuansa alami dengan elemen daun, kayu, tekstur organik, cahaya matahari lembut, dan warna yang segar">Alami segar — daun & tekstur organik</option>
@@ -212,12 +209,12 @@ BPOM RI Terdaftar</textarea>
                 <div><strong>Tanda air</strong><small>Ditempatkan tetap di pojok kiri bawah</small></div>
               </div>
               <label class="switch" aria-label="Aktifkan tanda air">
-                <input type="checkbox" id="watermarkEnabled" checked />
+                <input type="checkbox" id="watermarkEnabled" />
                 <span></span>
               </label>
               <label class="field watermark-input" id="watermarkField">
                 <span>Teks tanda air</span>
-                <input id="watermarkText" value="Griya Bunga Asri · Blok MM No 1" placeholder="Nama toko atau alamat" />
+                <input id="watermarkText" placeholder="Nama toko atau alamat" />
               </label>
             </section>
           </div>

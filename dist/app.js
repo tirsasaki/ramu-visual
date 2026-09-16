@@ -17,29 +17,6 @@
   let activeView = "json";
   let toastTimer;
 
-  const example = {
-    productName: "Luwak White Koffie",
-    subtitle: "Original",
-    weightValue: "19",
-    weightUnit: "gr",
-    contentsValue: "9",
-    contentsUnit: "sachet",
-    price: "3000",
-    priceUnit: "pcs",
-    wholesaleEnabled: true,
-    wholesaleMinQty: "5",
-    wholesalePrice: "2800",
-    leftStrip: "Kopi Instan 3-in-1\nWhite Coffee Original",
-    rightStrip: "Berat: 19 gr\nBPOM RI Terdaftar",
-    visualConcept: "foto iklan produk yang hangat di atas meja kayu, suasana kafe pada pagi hari, latar interior lembut dan kabur, properti pendukung alami, serta nuansa nyaman dan menggugah selera",
-    ratio: "1:1",
-    camera: "sejajar mata, menghadap lurus ke produk",
-    lighting: "cahaya pagi yang hangat, lembut, dan realistis",
-    quality: "fotografi produk sangat realistis, detail tinggi, tajam",
-    watermarkEnabled: true,
-    watermarkText: "Griya Bunga Asri · Blok MM No 1"
-  };
-
   function value(name) { return fields[name].value.trim(); }
   function lines(name) { return value(name).split(/\n+/).map((item) => item.trim()).filter(Boolean); }
   function amount(valueName, unitName) { return value(valueName) ? `${value(valueName)} ${fields[unitName].value}` : ""; }
@@ -230,7 +207,6 @@
   $("promptTab").addEventListener("click", () => switchView("prompt"));
   $("copyButton").addEventListener("click", copyResult);
   $("downloadButton").addEventListener("click", downloadJson);
-  $("exampleButton").addEventListener("click", () => { applyValues(example); showToast("Contoh kopi dimuat"); });
   $("resetButton").addEventListener("click", () => {
     form.reset();
     Object.values(fields).forEach((field) => {
