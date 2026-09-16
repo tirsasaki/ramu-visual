@@ -41,11 +41,12 @@
       ? `Baris 1: ${rupiah(basePrice)}/${unit} · Baris 2: ${wholesaleMin} ${unit} ${rupiah(wholesaleTotal)}`
       : basePrice != null ? `Baris 1: ${rupiah(basePrice)}/${unit}` : "";
     return {
-      versi_skema: "1.7",
+      versi_skema: "1.8",
       jenis_generasi: "gambar_produk_jualan",
       produk: {
         nama: value("productName"),
         subjudul: value("subtitle"),
+        subjudul_tampilan: value("subtitle") ? `✦ ${value("subtitle")} ✦` : "",
         kategori: fields.productCategory.value,
         berat: weight,
         isi: contents
@@ -100,8 +101,8 @@
         }
       },
       aturan_teks: {
-        judul: "wajib tampil besar dan terbaca di bagian atas gambar, salin nama produk persis",
-        subjudul: "wajib tampil tepat di bawah judul bila diisi, salin persis",
+        judul: "wajib tampil besar dan terbaca di bagian atas gambar, salin nama produk persis, gunakan efek cahaya lembut pada tepi huruf",
+        subjudul: "wajib tampil tepat di bawah judul dalam format ✦ Subjudul ✦, gunakan efek cahaya lembut pada tepi huruf",
         panel_informasi: "gunakan kartu informasi dengan bagian ikon di atas dan teks di bawah; area ikon memakai warna gelap, area informasi memakai warna sedikit lebih cerah dari keluarga warna yang sama; jangan putar teks",
         bahasa: "gunakan bahasa Inggris yang alami untuk semua informasi tambahan; nama produk, subjudul, merek, sertifikasi, angka, satuan, dan tanda air/alamat tetap persis"
       },
@@ -131,16 +132,16 @@
       ? `Tempatkan blok harga hanya di POJOK KANAN BAWAH. Susun sebagai dua baris vertikal yang benar-benar terpisah, bukan satu kalimat dan bukan satu baris mendatar.\nLINE 1 — HARGA NORMAL: “${price.line_1.teks}”. Jadikan LINE 1 lebih besar, tebal, dan dominan.\nLINE 2 — HARGA GROSIR: “${price.line_2.teks}”. Letakkan LINE 2 tepat di bawah LINE 1 dengan jeda vertikal yang jelas dan ukuran sedikit lebih kecil. LINE 2 hanya boleh memuat jumlah barang dan TOTAL harga paket grosir; jangan tampilkan harga grosir per satuan, tanda /${price.satuan}, rentang jumlah, kata “starting from”, atau kalimat tambahan. DILARANG menggabungkan LINE 1 dan LINE 2 pada baseline atau baris yang sama.`
       : `Di POJOK KANAN BAWAH, tampilkan “${price.line_1.teks}” sebagai harga normal yang besar, tebal, dan jelas.`;
     const titleRule = p.nama
-      ? `WAJIB tampilkan judul “${p.nama}” sebagai teks besar, tebal, dan mudah dibaca di bagian atas gambar.`
+      ? `WAJIB tampilkan judul “${p.nama}” sebagai teks besar, tebal, dan mudah dibaca di bagian atas gambar. Tambahkan efek cahaya lembut yang tipis pada tepi huruf—seperti halo halus, bukan neon kuat—agar judul terasa lebih hidup tanpa mengurangi ketajaman teks.`
       : "";
     const subtitleRule = p.subjudul
-      ? `WAJIB tampilkan subjudul “${p.subjudul}” tepat di bawah judul dengan ukuran lebih kecil tetapi tetap jelas.`
+      ? `WAJIB tampilkan subjudul tepat sebagai “${p.subjudul_tampilan}” di bawah judul, dengan satu simbol ✦ di awal dan satu simbol ✦ di akhir. Gunakan ukuran lebih kecil dari judul dan efek cahaya lembut yang tipis pada tepi huruf. Pastikan simbol bintang, teks, spasi, dan urutannya terlihat jelas.`
       : "";
     const servingRule = ["makanan", "minuman"].includes(p.kategori)
       ? `Karena ini produk ${p.kategori}, WAJIB tampilkan sajian siap konsumsi yang sesuai di dekat kemasan—terlihat lezat dan realistis, tidak mengganti kemasan, serta tidak menutupi logo atau informasi utama.`
       : "";
     const horizontalPanelRule = "Semua panel informasi harus berupa kartu yang proporsional dan mudah dibaca. Di dalam setiap kartu, tempatkan ikon sederhana pada BAGIAN ATAS dan teks informasi mendatar pada BAGIAN BAWAH. Area ikon memakai warna gelap; area teks memakai warna sedikit lebih cerah dari keluarga warna yang sama agar kombinasinya harmonis. Gunakan sudut membulat, kontras teks yang kuat, ukuran yang menyesuaikan panjang informasi, dan jarak yang lega. Jangan meletakkan ikon di samping teks, jangan menggunakan tulisan vertikal, dan jangan memutar teks.";
-    const languageRule = "Gunakan bahasa Inggris yang alami dan ringkas untuk seluruh informasi tambahan pada panel. Terjemahkan manfaat atau klaim ke bahasa Inggris, tetapi pertahankan persis nama produk, subjudul, nama merek, BPOM/sertifikasi, angka, satuan, serta tanda air atau alamat yang diberikan pengguna.";
+    const languageRule = "Gunakan bahasa Inggris yang alami dan ringkas untuk seluruh informasi tambahan pada panel. Terjemahkan manfaat atau klaim ke bahasa Inggris, tetapi pertahankan persis nama produk, teks inti subjudul, nama merek, BPOM/sertifikasi, angka, satuan, serta tanda air atau alamat yang diberikan pengguna. Hanya subjudul yang boleh diberi simbol dekoratif ✦ di awal dan akhir sesuai aturan.";
     return [
       `Buat gambar iklan produk profesional untuk ${p.nama || "produk pada foto acuan"}.`,
       titleRule,
