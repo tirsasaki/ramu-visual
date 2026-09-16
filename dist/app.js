@@ -33,22 +33,26 @@
       ? wholesaleMin * wholesalePrice
       : null;
     const unit = fields.priceUnit.value;
+    const weight = amount("weightValue", "weightUnit");
+    const contents = amount("contentsValue", "contentsUnit");
+    const leftInfo = [...new Set([...(weight ? [`Weight: ${weight}`] : []), ...lines("leftStrip")])];
+    const rightInfo = [...new Set([...(contents ? [`Contents: ${contents}`] : []), ...lines("rightStrip")])];
     const priceRule = wholesaleOn && basePrice != null && wholesaleMin != null && wholesalePrice != null
       ? `Baris 1: ${rupiah(basePrice)}/${unit} · Baris 2: ${wholesaleMin} ${unit} ${rupiah(wholesaleTotal)}`
       : basePrice != null ? `Baris 1: ${rupiah(basePrice)}/${unit}` : "";
     return {
-      versi_skema: "1.6",
+      versi_skema: "1.7",
       jenis_generasi: "gambar_produk_jualan",
       produk: {
         nama: value("productName"),
         subjudul: value("subtitle"),
         kategori: fields.productCategory.value,
-        berat: amount("weightValue", "weightUnit"),
-        isi: amount("contentsValue", "contentsUnit")
+        berat: weight,
+        isi: contents
       },
       konsep_visual: value("visualConcept"),
-      left_strip: lines("leftStrip"),
-      right_strip: lines("rightStrip"),
+      informasi_kiri: leftInfo,
+      informasi_kanan: rightInfo,
       pengaturan_gambar: {
         rasio: fields.ratio.value,
         sudut_kamera: fields.camera.value,
@@ -98,7 +102,7 @@
       aturan_teks: {
         judul: "wajib tampil besar dan terbaca di bagian atas gambar, salin nama produk persis",
         subjudul: "wajib tampil tepat di bawah judul bila diisi, salin persis",
-        panel_informasi: "gunakan kartu horizontal; ikon di kiri dan teks mendatar di kanan; jangan putar teks; ukuran kartu menyesuaikan isi",
+        panel_informasi: "gunakan kartu informasi dengan bagian ikon di atas dan teks di bawah; area ikon memakai warna gelap, area informasi memakai warna sedikit lebih cerah dari keluarga warna yang sama; jangan putar teks",
         bahasa: "gunakan bahasa Inggris yang alami untuk semua informasi tambahan; nama produk, subjudul, merek, sertifikasi, angka, satuan, dan tanda air/alamat tetap persis"
       },
       acuan_produk: {
@@ -135,7 +139,7 @@
     const servingRule = ["makanan", "minuman"].includes(p.kategori)
       ? `Karena ini produk ${p.kategori}, WAJIB tampilkan sajian siap konsumsi yang sesuai di dekat kemasan—terlihat lezat dan realistis, tidak mengganti kemasan, serta tidak menutupi logo atau informasi utama.`
       : "";
-    const horizontalPanelRule = "Semua panel informasi harus berupa kartu horizontal: ikon sederhana di sebelah kiri dan teks mendatar di sebelah kanan. Jangan gunakan tulisan vertikal, jangan memutar teks, dan jangan membuat panel tinggi serta sempit. Lebar dan tinggi kartu harus menyesuaikan panjang teks, dengan ukuran huruf besar, jarak yang lega, dan keterbacaan tinggi.";
+    const horizontalPanelRule = "Semua panel informasi harus berupa kartu yang proporsional dan mudah dibaca. Di dalam setiap kartu, tempatkan ikon sederhana pada BAGIAN ATAS dan teks informasi mendatar pada BAGIAN BAWAH. Area ikon memakai warna gelap; area teks memakai warna sedikit lebih cerah dari keluarga warna yang sama agar kombinasinya harmonis. Gunakan sudut membulat, kontras teks yang kuat, ukuran yang menyesuaikan panjang informasi, dan jarak yang lega. Jangan meletakkan ikon di samping teks, jangan menggunakan tulisan vertikal, dan jangan memutar teks.";
     const languageRule = "Gunakan bahasa Inggris yang alami dan ringkas untuk seluruh informasi tambahan pada panel. Terjemahkan manfaat atau klaim ke bahasa Inggris, tetapi pertahankan persis nama produk, subjudul, nama merek, BPOM/sertifikasi, angka, satuan, serta tanda air atau alamat yang diberikan pengguna.";
     return [
       `Buat gambar iklan produk profesional untuk ${p.nama || "produk pada foto acuan"}.`,
@@ -149,8 +153,8 @@
       servingRule,
       horizontalPanelRule,
       languageRule,
-      data.left_strip.length ? `Tempatkan kelompok kartu horizontal di sisi kiri atau kiri-bawah dengan isi: ${data.left_strip.join("; ")}.` : "",
-      data.right_strip.length ? `Tempatkan kelompok kartu horizontal di sisi kanan atau kanan-bawah dengan isi: ${data.right_strip.join("; ")}.` : "",
+      data.informasi_kiri.length ? `Tempatkan kelompok kartu informasi di sisi kiri atau kiri-bawah dengan isi: ${data.informasi_kiri.join("; ")}.` : "",
+      data.informasi_kanan.length ? `Tempatkan kelompok kartu informasi di sisi kanan atau kanan-bawah dengan isi: ${data.informasi_kanan.join("; ")}.` : "",
       pricePrompt,
       watermark,
       "Gunakan foto yang diunggah sebagai acuan utama. Pertahankan secara akurat bentuk kemasan, logo, warna produk, dan seluruh tulisan pada kemasan.",
