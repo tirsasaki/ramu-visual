@@ -291,7 +291,7 @@
       void Promise.resolve(context.registerTool({
         name: "susun_prompt_produk",
         title: "Susun prompt produk",
-        description: "Mengisi formulir produk dan memperbarui JSON serta prompt Flow yang terlihat di halaman.",
+        description: "Mengisi formulir produk dan memperbarui JSON serta prompt gambar yang terlihat di halaman.",
         inputSchema: {
           type: "object",
           properties: {

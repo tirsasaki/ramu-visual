@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Penyusun prompt JSON untuk membuat visual produk di Google Flow." />
+    <meta name="description" content="Penyusun prompt JSON dan prompt teks untuk membuat visual produk di berbagai generator gambar." />
     <meta name="theme-color" content="#14211d" />
-    <title>Ramu Visual — Prompt Produk untuk Flow</title>
+    <title>Ramu Visual — Prompt Gambar Produk</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -16,7 +16,7 @@
     <header class="topbar">
       <a class="brand" href="#" aria-label="Ramu Visual, kembali ke atas">
         <span class="brand-mark">R</span>
-        <span><strong>Ramu Visual</strong><small>Prompt produk untuk Flow</small></span>
+        <span><strong>Ramu Visual</strong><small>Prompt gambar produk</small></span>
       </a>
       <div class="top-actions">
         <span class="save-state" id="saveState"><i></i> Siap diramu</span>
@@ -29,7 +29,7 @@
           <p class="eyebrow">PENYUSUN PROMPT PRODUK</p>
           <h1 id="pageTitle">Dari rincian produk menjadi prompt yang siap dipakai.</h1>
         </div>
-        <p>Isi informasi penting, atur tampilan, lalu salin JSON atau prompt teksnya ke Flow. Hasil diperbarui otomatis saat Anda mengetik.</p>
+        <p>Isi informasi penting, atur tampilan, lalu salin JSON atau prompt teksnya ke generator gambar pilihan. Hasil diperbarui otomatis saat Anda mengetik.</p>
       </section>
 
       <div class="builder">
@@ -246,7 +246,7 @@
 
           <div class="tabs" role="tablist" aria-label="Jenis hasil">
             <button class="tab active" id="jsonTab" role="tab" aria-selected="true" aria-controls="jsonView" type="button">JSON</button>
-            <button class="tab" id="promptTab" role="tab" aria-selected="false" aria-controls="promptView" type="button">Prompt Flow</button>
+            <button class="tab" id="promptTab" role="tab" aria-selected="false" aria-controls="promptView" type="button">Prompt gambar</button>
           </div>
 
           <div class="result-view active" id="jsonView" role="tabpanel" aria-labelledby="jsonTab">
@@ -270,9 +270,9 @@
               <span>PILIHAN</span>
             </div>
             <div class="generator-grid">
-              <a class="generator-link featured" href="https://flow.google.com/" target="_blank" rel="noopener noreferrer">
+              <a class="generator-link" href="https://flow.google.com/" target="_blank" rel="noopener noreferrer">
                 <span class="generator-mark">F</span>
-                <span><strong>Google Flow</strong><small>Pilihan utama</small></span>
+                <span><strong>Google Flow</strong><small>Buat visual produk</small></span>
                 <b aria-hidden="true">↗</b>
               </a>
               <a class="generator-link" href="https://chatgpt.com/images" target="_blank" rel="noopener noreferrer">
@@ -292,7 +292,7 @@
               </a>
             </div>
           </section>
-          <p class="output-help">Unggah foto produk sebagai <em>ingredient</em> di Flow, lalu tempel prompt teks untuk menjaga bentuk kemasan tetap konsisten.</p>
+          <p class="output-help">Unggah foto produk sebagai gambar acuan di generator pilihan, lalu tempel prompt teks untuk menjaga bentuk kemasan tetap konsisten.</p>
         </aside>
       </div>
     </main>
