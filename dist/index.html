@@ -172,7 +172,7 @@
                   <span>Harga satuan</span>
                   <div class="currency-input">
                     <span>Rp</span>
-                    <input id="price" name="price" type="number" min="0" step="100" value="3000" placeholder="3000" />
+                    <input id="price" name="price" type="number" min="0" step="100" placeholder="3000" />
                   </div>
                 </label>
                 <label class="field">
@@ -190,7 +190,7 @@
                 <div class="wholesale-toggle">
                 <div><strong>Harga grosir</strong><small>Harga turun otomatis mulai jumlah tertentu</small></div>
                   <label class="switch" aria-label="Aktifkan harga grosir">
-                    <input type="checkbox" id="wholesaleEnabled" checked />
+                    <input type="checkbox" id="wholesaleEnabled" />
                     <span></span>
                   </label>
                 </div>
@@ -198,7 +198,7 @@
                   <label class="field">
                     <span>Mulai beli</span>
                     <div class="quantity-input">
-                      <input id="wholesaleMinQty" type="number" min="2" step="1" value="5" />
+                      <input id="wholesaleMinQty" type="number" min="2" step="1" />
                       <b id="wholesaleUnitLabel">pcs</b>
                     </div>
                   </label>
@@ -206,12 +206,12 @@
                     <span>Harga per satuan</span>
                     <div class="currency-input">
                       <span>Rp</span>
-                      <input id="wholesalePrice" type="number" min="0" step="100" value="2800" />
+                      <input id="wholesalePrice" type="number" min="0" step="100" />
                     </div>
                     <small>Hasil visual menampilkan total jumlah grosir, bukan harga per satuan.</small>
                   </label>
                 </div>
-                <p class="price-summary" id="priceSummary">Baris 1: Rp3.000/pcs · Baris 2: 5 pcs Rp14.000</p>
+                <p class="price-summary" id="priceSummary">Isi harga untuk menampilkan ringkasan</p>
               </div>
             </section>
 
