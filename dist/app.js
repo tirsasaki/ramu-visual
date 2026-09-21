@@ -344,6 +344,12 @@
     } catch (_) { report(); }
   }
 
+  fields.price.value = "";
+  fields.wholesaleEnabled.checked = false;
+  fields.wholesaleMinQty.value = "";
+  fields.wholesalePrice.value = "";
+  fields.watermarkEnabled.checked = false;
+  fields.watermarkText.value = "";
   render();
   registerWebMcp();
 })();
